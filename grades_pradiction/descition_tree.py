@@ -1,38 +1,20 @@
 import pandas as pd
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split, KFold, cross_val_score, learning_curve
 from sklearn.metrics import r2_score, mean_squared_error
 import matplotlib.pyplot as plt
+from grades_packages.preprocessing import encoding
 
 file_name = input('What file do you want to test? ')
 learning_grades = pd.read_csv(file_name)
 
-le = LabelEncoder()
-
 type_science = input('Is it triple or combined? ')
 
-if type_science.lower()[0] == 'c':
-    columns_to_encode = ['Year 10 Combined MOCK GRADE', 'Combined MOCK GRADE term 2', 'Combined MOCK GRADE Term 4']
-    le = LabelEncoder()
-    for col in columns_to_encode:
-        learning_grades[col] = le.fit_transform(learning_grades[col])
-    X = learning_grades[['Year 10 Combined MOCK GRADE', 'Combined MOCK GRADE term 2']]
-    y = learning_grades['Combined MOCK GRADE Term 4']
-else:
-    columns_to_encode = ['FFT20', 'year 10 bio grade', 'year 10 chem grade', 'year 10 phys grade', 
-                        'year 11 paper 1 bio grade', 'year 11 paper 1 chem grade', 'year 11 paper 1 phys grade',
-                        'year 11 paper 2 bio grade', 'year 11 paper 2 chem grade', 'year 11 paper 2 phys grade']
-    for col in columns_to_encode:
-        learning_grades[col] = le.fit_transform(learning_grades[col])
-    X = learning_grades[['year 10 bio grade', 'year 10 chem grade', 'year 10 phys grade', 
-                        'year 11 paper 1 bio grade', 'year 11 paper 1 chem grade', 'year 11 paper 1 phys grade']]
-    y = learning_grades[['year 11 paper 2 bio grade', 'year 11 paper 2 chem grade', 'year 11 paper 2 phys grade']]
-
+learning_grades, X, y = encoding.le_science(learning_grades, type_science)
 
 # split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 dtr = DecisionTreeRegressor(random_state=142, max_depth=6, min_samples_leaf=1)
 
@@ -51,20 +33,20 @@ print('Mean Squared Error (MSE):', mse)
 print('Root Mean Squared Error (RMSE):', rmse)
 print('R2 Score:', r2)
 
-#to check for overfitting
+# to check for overfitting
 
 kfold = KFold(n_splits=10, shuffle=True, random_state=15)
 scores = cross_val_score(dtr, X, y, cv=kfold, scoring='r2')
-#the cross-validated scores are very similar, reducing the chance that the model is overfitted
+# the cross-validated scores are very similar, reducing the chance that the model is overfitted
 print('Cross-validation scores:', scores)
 
 train_sizes, train_scores, test_scores = learning_curve(dtr, X, y, train_sizes=np.linspace(0.1, 1.0, 10), cv=5)
-                                                        
+
 train_mean = np.mean(train_scores, axis=1)
 train_std = np.std(train_scores, axis=1)
 test_mean = np.mean(test_scores, axis=1)
 test_std = np.std(test_scores, axis=1)
-                                                        
+
 plt.plot(train_sizes, train_mean, color='blue', marker='o', markersize=5, label='training score')
 plt.fill_between(train_sizes, train_mean + train_std, train_mean - train_std, alpha=0.15, color='blue')
 plt.plot(train_sizes, test_mean, color='green', linestyle='--', marker='s', markersize=5, label='test score')

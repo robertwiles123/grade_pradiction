@@ -14,6 +14,7 @@ type_science = input('Is it triple or combined? ')
 learning_grades, X, y = encoding.le_science(learning_grades, type_science)
 
 # split the data into training and testing sets
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 dtr = DecisionTreeRegressor(random_state=142, max_depth=6, min_samples_leaf=1)
@@ -33,6 +34,7 @@ print('Mean Squared Error (MSE):', mse)
 print('Root Mean Squared Error (RMSE):', rmse)
 print('R2 Score:', r2)
 
+
 # to check for overfitting
 
 kfold = KFold(n_splits=10, shuffle=True, random_state=15)
@@ -42,10 +44,13 @@ print('Cross-validation scores:', scores)
 
 train_sizes, train_scores, test_scores = learning_curve(dtr, X, y, train_sizes=np.linspace(0.1, 1.0, 10), cv=5)
 
+
 train_mean = np.mean(train_scores, axis=1)
 train_std = np.std(train_scores, axis=1)
 test_mean = np.mean(test_scores, axis=1)
 test_std = np.std(test_scores, axis=1)
+5
+
 
 plt.plot(train_sizes, train_mean, color='blue', marker='o', markersize=5, label='training score')
 plt.fill_between(train_sizes, train_mean + train_std, train_mean - train_std, alpha=0.15, color='blue')

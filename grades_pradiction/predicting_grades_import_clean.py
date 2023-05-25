@@ -32,6 +32,7 @@ just_grades_no_nan = just_grades.dropna(axis=0)
 just_grades_clean_FFT20 = just_grades_no_nan.copy()
 just_grades_clean_FFT20['FFT20'] = just_grades_no_nan['FFT20'].str.replace('[^\d]', '')
 
+
 # data has been cleaned and simplified to allow greater comparison
 # display(pd.unique(just_grades_clean_FFT20['FFT20']))
 
@@ -39,6 +40,7 @@ just_grades_clean_FFT20['FFT20'] = just_grades_no_nan['FFT20'].str.replace('[^\d
 # display(just_grades_clean_FFT20.describe())
 
 # collect column names to clean one after another
+
 columns = []
 for col in just_grades_clean_FFT20.columns:
     columns.append(col)
@@ -50,9 +52,11 @@ clean_grades = just_grades_clean_FFT20.copy()
 
 for col in columns:
     clean_grades[col] = clean_grades[col].replace({'Ab': np.nan, 'Abs': np.nan})
+    
     clean_grades[col] = clean_grades[col].astype('object')
 
 full_clean_grades = clean_grades.dropna(axis=0)
+
 
 # All the same legth, all objects
 print(full_clean_grades.info())

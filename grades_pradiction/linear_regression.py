@@ -1,4 +1,6 @@
+
 # As the model is only accurate after about 20 samples, and due to the high R2 score there is a possiblity of over fitting I will also run a linear regression
+
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
@@ -6,7 +8,9 @@ from sklearn.model_selection import train_test_split, KFold, cross_val_score, le
 from sklearn.metrics import r2_score, mean_squared_error
 import matplotlib.pyplot as plt
 from grades_packages.preprocessing import encoding
+
 # using joblib as it is more secure and will be predicting data based on GDPR and as all within sklearn the compatability isn't an issue
+
 from joblib import dump
 
 file_name = input('What file do you want to test? ')
@@ -18,6 +22,7 @@ type_science = input('Is it triple or combined? ')
 learning_grades, X, y = encoding.le_science(learning_grades, type_science)
 
 # split the data into training and testing sets
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 # create a linear regression object
@@ -41,11 +46,13 @@ print('testMSE {:.2f}'.format(mean_squared_error(y_test, y_pred)))
 print("Root Mean Squared Error (RMSE): {:.2f}".format(rmse))
 print("R2 score:", r2)
 
+
 # this again has an extremely high R2 score, so may be over fit
 
 kfold = KFold(n_splits=10, shuffle=True, random_state=15)
 scores = cross_val_score(lr, X, y, cv=kfold, scoring='r2')
 # the cross-validated scores are very similar, reducing the chance that the model is overfitted
+
 print('Cross-validation scores:', scores)
 
 train_sizes, train_scores, test_scores = learning_curve(lr, X, y, train_sizes=np.linspace(0.1, 1.0, 10), cv=5)
@@ -70,3 +77,4 @@ save = input('should it be saved? ')
 if save[0].strip().lower() == 'y':
     name = input('what is the name of the program? ')
     dump(lr, name+'.joblib')
+

@@ -2,6 +2,7 @@ import pandas as pd
 from joblib import load
 from sklearn.preprocessing import LabelEncoder
 
+
 combined = pd.read_csv('combined_clean.csv')
 
 
@@ -21,11 +22,14 @@ if data.endswith('.csv'):
 # need to see if I can use my own package to do this, not sure it'll fit on this laptop, screen too small
 
 
+
+
 def run_test(data, models=combined_models_to_predict_dict):
     outcomes = {}
     for k, v in combined_models_to_predict_dict.items():
         if isinstance(data, str):
             print('oops')
+
         # currently does not work, as I do not have enough training data and have missing encoudings. This happens with one shot encouding as well
         elif isinstance(data, pd.DataFrame):
             le = LabelEncoder()
@@ -48,6 +52,8 @@ def run_test(data, models=combined_models_to_predict_dict):
     return outcomes
 
 
+
+
 outcome = run_test(data)
 print(outcome)
 
@@ -56,5 +62,6 @@ outcome_df = pd.DataFrame(outcome)
 
 # Join the predicted values with the original DataFrame
 predicted_data = data.join(outcome_df)
+
 
 print(predicted_data)
